@@ -1,0 +1,81 @@
+package Gestao;
+
+public class Estatisticas {
+    private int pessoasFilaAlmoco;
+    private int pessoasFilaCaixa;
+    private int pessoasAlmocando;
+    private int pessoasAtendidas;
+    private int mesasLivres;
+
+    public Estatisticas() {
+        pessoasFilaAlmoco = 0;
+        pessoasFilaCaixa = 0;
+        pessoasAlmocando = 0;
+        pessoasAtendidas = 0;
+        mesasLivres = 0;
+    }
+
+    public void incrementarPessoasFilaAlmoco() {
+        pessoasFilaAlmoco++;
+    }
+
+    public void decrementarPessoasFilaAlmoco() {
+        if (pessoasFilaAlmoco > 0) {
+            pessoasFilaAlmoco--;
+        }
+    }
+
+    public void incrementarPessoasFilaCaixa() {
+        pessoasFilaCaixa++;
+    }
+
+    public void decrementarPessoasFilaCaixa() {
+        if (pessoasFilaCaixa > 0) {
+            pessoasFilaCaixa--;
+        }
+    }
+
+    public void incrementarPessoasAlmocando() {
+        pessoasAlmocando++;
+    }
+
+    public void decrementarPessoasAlmocando() {
+        if (pessoasAlmocando > 0) {
+            pessoasAlmocando--;
+        }
+    }
+
+    public void incrementarPessoasAtendidas() {
+        pessoasAtendidas++;
+    }
+
+    public void decrementarPessoasAtendidas() {
+        if (pessoasAtendidas > 0) {
+            pessoasAtendidas--;
+        }
+    }
+
+    public void setMesasLivres(int mesasLivres) {
+        this.mesasLivres = mesasLivres;
+    }
+
+    public int getPessoasFilaAlmoco() {
+        return pessoasFilaAlmoco;
+    }
+
+    public int getPessoasFilaCaixa() {
+        return pessoasFilaCaixa;
+    }
+
+    public int getPessoasAlmocando() {
+        return pessoasAlmocando;
+    }
+
+    public int getPessoasAtendidas() {
+        return pessoasAtendidas;
+    }
+
+    public int getMesasLivres() {
+        return mesasLivres;
+    }
+}
