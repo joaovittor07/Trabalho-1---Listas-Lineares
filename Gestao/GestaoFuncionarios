@@ -1,0 +1,181 @@
+package Gestao;
+
+import Estrutura.Funcionarios;
+
+public class GestaoFuncionarios {
+    private Node primeiro;
+    private int tamanho;
+
+    private class Node {
+        Funcionarios funcionario;
+        Node proximo;
+
+        Node(Funcionarios funcionario) {
+            this.funcionario = funcionario;
+            this.proximo = null;
+        }
+    }
+
+    public GestaoFuncionarios() {
+        this.primeiro = null;
+        this.tamanho = 0;
+    }
+
+    public void cadastrarFuncionario(String nome, int numeroCargo, double salario, String escalaTrabalho) {
+        String cargo = obterCargo(numeroCargo);
+        Funcionarios funcionario = new Funcionarios(nome, cargo, salario, escalaTrabalho);
+        Node novoFuncionario = new Node(funcionario);
+        if (primeiro == null) {
+            primeiro = novoFuncionario;
+        } else {
+            Node atual = primeiro;
+            while (atual.proximo != null) {
+                atual = atual.proximo;
+            }
+            atual.proximo = novoFuncionario;
+        }
+        tamanho++;
+        System.out.println("\n------------------------------------");
+        System.out.println("Funcionário cadastrado com sucesso!");
+        System.out.println("------------------------------------");
+    }
+
+    private String obterCargo(int numeroCargo) {
+        switch (numeroCargo) {
+            case 1:
+                return "Cozinheiro";
+            case 2:
+                return "Ajudante de Cozinha";
+            case 3:
+                return "Pizzaiolo";
+            case 4:
+                return "Chapeiro";
+            case 5:
+                return "Garçom";
+            case 6:
+                return "Barman";
+            case 7:
+                return "Auxiliar de Bar";
+            case 8:
+                return "Recepcionista";
+            case 9:
+                return "Gerente de Restaurante";
+            case 10:
+                return "Caixa";
+            case 11:
+                return "Auxiliar de Limpeza";
+            case 12:
+                return "Lavador de Louças";
+            case 13:
+                return "Entregador";
+            default:
+                return "Cargo não especificado";
+        }
+    }
+    
+    public boolean removerFuncionario(String nome) {
+        Node atual = primeiro;
+        Node anterior = null;
+        while (atual != null) {
+            if (atual.funcionario.getNome().equals(nome)) {
+                if (anterior == null) {
+                    primeiro = atual.proximo;
+                } else {
+                    anterior.proximo = atual.proximo;
+                }
+                tamanho--;
+                System.out.println("\n---------------------------------");
+                System.out.println("Funcionário removido com sucesso!");
+                System.out.println("---------------------------------");
+                return true;
+            }
+            anterior = atual;
+            atual = atual.proximo;
+        }
+        System.out.println("\n---------------------------");
+        System.out.println("Funcionário não encontrado!");
+        System.out.println("---------------------------");
+        return false;
+    }
+
+    public void listarFuncionarios() {
+        if (this.tamanho == 0) {
+            System.out.println("\n------------------------------");
+            System.out.println("Nenhum funcionário cadastrado.");
+            System.out.println("------------------------------");
+            return;
+        }
+
+        System.out.println("\n----------------------");
+        System.out.println("Lista de Funcionários:");
+        System.out.println("----------------------");
+        
+        Node atual = primeiro;
+        while (atual != null) {
+            System.out.println(atual.funcionario);
+            atual = atual.proximo;
+        }
+    }
+    
+    public boolean atualizarFuncionario(String nome, String novoNome, String novoCargo, double novoSalario, String novaEscalaTrabalho) {
+        Node atual = primeiro;
+        while (atual != null) {
+            if (atual.funcionario.getNome().equals(nome)) {
+                atual.funcionario.setNome(novoNome);
+                atual.funcionario.setCargo(novoCargo);
+                atual.funcionario.setSalario(novoSalario);
+                atual.funcionario.setEscalaTrabalho(novaEscalaTrabalho);
+            	System.out.println("\n-----------------------------------");
+                System.out.println("Funcionário atualizado com sucesso!");
+                System.out.println("-----------------------------------");
+                return true;
+            }
+            atual = atual.proximo;
+        }
+    	System.out.println("\n---------------------------");
+        System.out.println("Funcionário não encontrado.");
+        System.out.println("---------------------------");
+        return false;
+    }
+
+    
+    public void exibirEscalaTrabalho() {
+        System.out.println("Escala de Trabalho dos Funcionários:");
+        Node atual = primeiro;
+        while (atual != null) {
+            System.out.println("Funcionário: " + atual.funcionario.getNome() + ", Escala de Trabalho: " + atual.funcionario.getEscalaTrabalho());
+            atual = atual.proximo;
+        }
+    }
+    
+    public boolean haFuncionariosCadastrados() {
+        return this.primeiro != null;
+    }
+    
+    public int getTamanho() {
+        return this.tamanho;
+    }
+
+    public boolean existeFuncionario(String nome) {
+        Node atual = primeiro;
+        while (atual != null) {
+            if (atual.funcionario.getNome().equals(nome)) {
+                return true;
+            }
+            atual = atual.proximo;
+        }
+        return false;
+    }
+
+
+    public Funcionarios getFuncionarioPeloNome(String nome) {
+        Node atual = primeiro;
+        while (atual != null) {
+            if (atual.funcionario.getNome().equals(nome)) {
+                return atual.funcionario;
+            }
+            atual = atual.proximo;
+        }
+        return null; 
+    }    
+}
