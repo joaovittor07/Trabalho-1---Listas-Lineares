@@ -142,7 +142,7 @@ public class GestaoMesas {
     }
     
     public boolean alocarClienteParaMesa(String nomeCliente, int numeroMesa) {
-        // Verificar se o cliente está cadastrado
+        
         if (!gestaoClientes.verificarCliente(nomeCliente)) {
         	System.out.println("\n-----------------------");
             System.out.println("Cliente não encontrado.");
@@ -150,7 +150,6 @@ public class GestaoMesas {
             return false;
         }
 
-        // Verificar se a mesa está disponível
         Node atual = primeiroDisponivel;
         Node anterior = null;
         while (atual != null && atual.mesa.getNumero() != numeroMesa) {
@@ -165,7 +164,7 @@ public class GestaoMesas {
         }
 
         atual.mesa.setCliente(nomeCliente);
-        atual.mesa.setOcupada(true); // Marcar a mesa como ocupada
+        atual.mesa.setOcupada(true); 
         if (anterior != null) {
             anterior.proximo = atual.proximo;
         } else {
@@ -184,11 +183,11 @@ public class GestaoMesas {
         Node atual = primeiroDisponivel;
         while (atual != null) {
             if (atual.mesa.getNumero() == numeroMesa) {
-                return true; // A mesa está disponível
+                return true; 
             }
             atual = atual.proximo;
         }
-        return false; // A mesa não está disponível
+        return false; 
     }
 
     public Node getPrimeiroDisponivel() {
@@ -196,7 +195,7 @@ public class GestaoMesas {
     }
     
     public boolean selecionarClienteParaMesa(GestaoClientes gestaoClientes, int numeroMesa, String nomeCliente) {
-        // Verificar se o cliente está cadastrado
+       
         if (!gestaoClientes.verificarCliente(nomeCliente)) {
         	System.out.println("\n-----------------------");
             System.out.println("Cliente não encontrado.");
@@ -256,7 +255,7 @@ public class GestaoMesas {
         while (atual != null && atual.mesa.getNumero() != numeroMesa) {
             atual = atual.proximo;
         }
-        // Verifica se a mesa foi encontrada e se está ocupada
+
         return atual != null && atual.mesa.isOcupada();
     }
     
