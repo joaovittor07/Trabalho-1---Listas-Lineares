@@ -1,0 +1,67 @@
+package Estrutura;
+
+public class Mesa {
+    private int numero;
+    private boolean ocupada;
+    private String cliente;
+    private String funcionario;
+    private Pedidos pedidos; // Campo para armazenar o pedido atual da mesa
+
+    public Mesa(int numero) {
+        this.numero = numero;
+        this.ocupada = false;
+        this.cliente = "";
+        this.funcionario = "";
+        this.pedidos = null; // Inicialmente não há pedido associado à mesa
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public boolean isOcupada() {
+        return ocupada;
+    }
+
+    public void setOcupada(boolean ocupada) {
+        this.ocupada = ocupada;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getFuncionario() {
+        return funcionario;
+    }
+
+    public void setFuncionario(String funcionario) {
+        this.funcionario = funcionario;
+    }
+    
+    public Pedidos getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(Pedidos pedidos) {
+        this.pedidos = pedidos;
+    }
+    
+    public void adicionarPedidos(Pedidos novoPedidos) {
+        this.pedidos = novoPedidos;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Mesa{" +
+                "numero=" + numero +
+                ", ocupada=" + (ocupada ? "Sim" : "Não") +
+                ", cliente='" + cliente + '\'' +
+                '}';
+    }
+}
