@@ -1,0 +1,695 @@
+package Main;
+
+import java.util.Scanner;
+
+import Estrutura.Clientes;
+import Estrutura.Funcionarios;
+import Estrutura.Mesa;
+import Estrutura.Pedidos;
+
+import Gestao.CaixaPagamento;
+import Gestao.GestaoClientes;
+import Gestao.GestaoFuncionarios;
+import Gestao.GestaoMesas;
+import Gestao.GestaoPedidos;
+
+public class Main {
+    public static void main(String[] args) {
+    
+    	CaixaPagamento caixaPagamento = new CaixaPagamento();
+    	GestaoClientes gestaoClientes = new GestaoClientes();
+    	GestaoFuncionarios gestaoFuncionarios = new GestaoFuncionarios();
+    	GestaoMesas gestaoMesas = new GestaoMesas(10);
+    	GestaoPedidos gestaoPedidos = new GestaoPedidos(gestaoClientes);
+    	
+    	Scanner scanner = new Scanner(System.in);
+    	
+    	int opcao;
+        do {
+            System.out.println("\n========== Menu ==========");
+            System.out.println("1. Gestão de Funcionários");
+            System.out.println("2. Gestão de Clientes");
+            System.out.println("3. Gestão de Mesas");
+            System.out.println("4. Gestão de Pedidos");
+            System.out.println("5. Menu Segundario");
+            System.out.print("Escolha uma opção: ");
+            opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    menuGestaoFuncionarios(gestaoFuncionarios, scanner);
+                    break;
+                case 2:
+                    menuGestaoClientes(gestaoClientes, scanner);
+                    break;
+                case 3:
+                    menuGestaoMesas(gestaoMesas, scanner);
+                    break;
+                case 4:
+                    menuGestaoPedidos(gestaoPedidos, scanner);
+                    break;
+                case 5:
+                    menusegundario(gestaoMesas, gestaoFuncionarios, gestaoPedidos, gestaoClientes, caixaPagamento, scanner);
+                    break;
+                default:
+            }
+        } while (opcao != 0);
+
+        scanner.close();
+    }
+    
+    private static void menuGestaoFuncionarios(GestaoFuncionarios gestaoFuncionario, Scanner scanner) {
+        boolean sair = false;
+        while (!sair) {
+            System.out.println("\n=== Menu de Gestão de Funcionários ===");
+            System.out.println("1. Cadastrar Funcionário");
+            System.out.println("2. Remover Funcionário");
+            System.out.println("3. Listar Funcionários");
+            System.out.println("4. Atualizar Funcionários");
+            System.out.println("5. Exibir Escala de Trabalho");
+            System.out.println("6. Sair");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (opcao) {
+                case 1:
+                    cadastrarFuncionario(gestaoFuncionario, scanner);
+                    break;
+                case 2:
+                    removerFuncionario(gestaoFuncionario, scanner);
+                    break;
+                case 3:
+                    listarFuncionarios(gestaoFuncionario);
+                    break;
+                case 4:
+                	atualizarFuncionario(gestaoFuncionario, scanner);
+                	break;
+                case 5:
+                    exibirEscalaTrabalho(gestaoFuncionario);
+                    break;
+                case 6:
+                    sair = true;
+                    break;
+                default:
+                	System.out.println("\n----------------------------------------------------");
+                    System.out.println("Opção inválida! Por favor, escolha uma opção válida.");
+                    System.out.println("----------------------------------------------------");
+            }
+        }
+        System.out.println("Encerrando o programa...");
+    }
+
+    private static void cadastrarFuncionario(GestaoFuncionarios gestaoFuncionario, Scanner scanner) {
+        System.out.println("\n=== Cadastro de Funcionario ===");
+        System.out.print("Nome do Funcionário: ");
+        String nome = scanner.nextLine();
+        System.out.println("\n---------------------------------");
+        System.out.println("Selecione o cargo do Funcionário:");
+        System.out.println("---------------------------------");
+        System.out.println("1. Cozinheiro");
+        System.out.println("2. Ajudante de Cozinha");
+        System.out.println("3. Pizzaiolo");
+        System.out.println("4. Chapeiro");
+        System.out.println("5. Garçom");
+        System.out.println("6. Barman");
+        System.out.println("7. Auxiliar de Bar");
+        System.out.println("8. Recepcionista");
+        System.out.println("9. Gerente de Restaurante");
+        System.out.println("10. Caixa");
+        System.out.println("11. Auxiliar de Limpeza");
+        System.out.println("12. Lavador de Louças");
+        System.out.println("13. Entregador");
+        System.out.print("\nDigite o número correspondente ao cargo: ");
+        int numeroCargo = scanner.nextInt();
+        scanner.nextLine(); 
+        System.out.print("\nSalário do Funcionário: ");
+        double salario = scanner.nextDouble();
+        scanner.nextLine(); 
+        System.out.print("\nEscala de Trabalho do Funcionário: ");
+        String escalaTrabalho = scanner.nextLine();
+        gestaoFuncionario.cadastrarFuncionario(nome, numeroCargo, salario, escalaTrabalho);
+    }
+
+    private static void removerFuncionario(GestaoFuncionarios gestaoFuncionario, Scanner scanner) {
+    	System.out.println("\n=== Remover Funcionario ===");
+        System.out.print("Nome do Funcionário: ");
+        String nome = scanner.nextLine();
+        gestaoFuncionario.removerFuncionario(nome);
+    }
+
+    private static void listarFuncionarios(GestaoFuncionarios gestaoFuncionario) {
+    	System.out.println("\n=== Listar Funcionario ===");
+        gestaoFuncionario.listarFuncionarios();
+    }
+    
+    private static void atualizarFuncionario(GestaoFuncionarios gestaoFuncionario, Scanner scanner) {
+    	System.out.println("\n=== Atualizar Funcionario ===");
+        System.out.print("Nome do Funcionário: ");
+        String nome = scanner.nextLine();
+        System.out.print("Novo nome do funcionário: ");
+        String novoNome = scanner.nextLine();
+        System.out.print("Novo cargo do funcionário: ");
+        String novoCargo = scanner.nextLine();
+        System.out.print("Novo salário do funcionário: ");
+        double novoSalario = scanner.nextDouble();
+        scanner.nextLine(); 
+        System.out.print("Nova escala de trabalho do funcionário: ");
+        String novaEscalaTrabalho = scanner.nextLine();
+
+        boolean atualizado = gestaoFuncionario.atualizarFuncionario(nome, novoNome, novoCargo, novoSalario, novaEscalaTrabalho);
+        if (atualizado) {
+
+        } else {
+        	
+        }
+    }
+
+    private static void exibirEscalaTrabalho(GestaoFuncionarios gestaoFuncionario) {
+    	System.out.println("\n=== Exibir Escala de Trabalho ===");
+        gestaoFuncionario.exibirEscalaTrabalho();
+    }
+
+    private static void menuGestaoClientes(GestaoClientes gestaoClientes, Scanner scanner) {
+        boolean sair = false;
+        while (!sair) {
+            System.out.println("\n=== Menu de Gestão de Clientes ===");
+            System.out.println("1. Cadastrar Cliente");
+            System.out.println("2. Remover Cliente");
+            System.out.println("3. Listar Clientes");
+            System.out.println("4. Atualizar Cliente");
+            System.out.println("5. Sair");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+            scanner.nextLine(); 
+            
+            switch (opcao) {
+                case 1:
+                    cadastrarCliente(gestaoClientes, scanner);
+                    break;
+                case 2:
+                    removerCliente(gestaoClientes, scanner);
+                    break;
+                case 3:
+                    listarClientes(gestaoClientes);
+                    break;
+                case 4:
+                    atualizarCliente(gestaoClientes, scanner);
+                    break;
+                case 5:
+                    sair = true;
+                    break;
+                default:
+                	System.out.println("\n----------------------------------------------------");
+                    System.out.println("Opção inválida! Por favor, escolha uma opção válida.");
+                    System.out.println("----------------------------------------------------");
+            }
+        }
+        System.out.println("Encerrando o programa...");
+    }
+
+    private static void cadastrarCliente(GestaoClientes gestaoClientes, Scanner scanner) {
+    	System.out.println("\n=== Cadastro de Clientes ===");
+        System.out.print("Nome do Cliente: ");
+        String nome = scanner.nextLine();
+        System.out.print("CPF do Cliente: ");
+        String cpf = scanner.nextLine();
+        System.out.print("Telefone do Cliente: ");
+        String telefone = scanner.nextLine();
+        Clientes cliente = new Clientes(nome, cpf, telefone);
+        gestaoClientes.cadastrarCliente(cliente);
+    }
+
+    private static void removerCliente(GestaoClientes gestaoClientes, Scanner scanner) {
+    	System.out.println("\n=== Remover Clientes ===");
+        System.out.print("Nome do Cliente: ");
+        String nome = scanner.nextLine();
+        gestaoClientes.removerCliente(nome);
+    }
+
+    private static void listarClientes(GestaoClientes gestaoClientes) {
+    	System.out.println("\n=== Lista Clientes ===");
+        gestaoClientes.listarClientes();
+    }
+
+    private static void atualizarCliente(GestaoClientes gestaoClientes, Scanner scanner) {
+    	System.out.println("\n=== Atuazar Clientes ===");
+        System.out.print("Nome do Cliente: ");
+        String nome = scanner.nextLine();
+        System.out.print("Novo Nome do Cliente: ");
+        String novoNome = scanner.nextLine();
+        System.out.print("Novo CPF do Cliente: ");
+        String novoCpf = scanner.nextLine();
+        System.out.print("Novo Telefone do Cliente: ");
+        String novoTelefone = scanner.nextLine();
+        gestaoClientes.atualizarCliente(nome, novoNome, novoCpf, novoTelefone);
+    }
+    
+    private static void menuGestaoMesas(GestaoMesas gestaoMesas, Scanner scanner) {
+        boolean sair = false;
+        while (!sair) {
+            System.out.println("\n=== Menu de Gestão de Mesas ===");
+            System.out.println("1. Ocupar Mesa");
+            System.out.println("2. Liberar Mesa");
+            System.out.println("3. Listar Todas as Mesas");
+            System.out.println("4. Listar Mesas Disponíveis");
+            System.out.println("5. Alterar Capacidade de Mesas");
+            System.out.println("6. Sair");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (opcao) {
+                case 1:
+                    ocuparMesa(gestaoMesas, scanner);
+                    break;
+                case 2:
+                    liberarMesa(gestaoMesas, scanner);
+                    break;
+                case 3:
+                    listarMesas(gestaoMesas);
+                    break;
+                case 4:
+                    listarMesasDisponiveis(gestaoMesas);
+                    break;
+                case 5:
+                    alterarCapacidadeMesas(gestaoMesas, scanner);
+                    break;
+                case 6:
+                    sair = true;
+                    break;
+                default:
+                	System.out.println("\n----------------------------------------------------");
+                    System.out.println("Opção inválida! Por favor, escolha uma opção válida.");
+                    System.out.println("----------------------------------------------------");
+            }
+        }
+        System.out.println("Encerrando o programa...");
+    }
+
+    private static void ocuparMesa(GestaoMesas gestaoMesas, Scanner scanner) {
+    	System.out.println("\n=== Ocupar Mesa ===");
+        System.out.print("Digite o número da mesa a ser ocupada: ");
+        int numeroMesa = scanner.nextInt();
+        boolean ocupada = gestaoMesas.ocuparMesa(numeroMesa);
+        if (ocupada) {
+        	System.out.println("\n-------------------------");
+            System.out.println("Mesa ocupada com sucesso!");
+            System.out.println("-------------------------");
+        } else {
+        	System.out.println("\n----------------------------------");
+            System.out.println("Mesa não encontrada ou já ocupada.");
+            System.out.println("----------------------------------");
+        }
+    }
+
+    private static void liberarMesa(GestaoMesas gestaoMesas, Scanner scanner) {
+    	System.out.println("\n=== Liberar Mesa ===");
+        System.out.print("Digite o número da mesa a ser liberada: ");
+        int numeroMesa = scanner.nextInt();
+        boolean liberada = gestaoMesas.liberarMesa(numeroMesa);
+        if (liberada) {
+        	System.out.println("\n--------------------------");
+            System.out.println("Mesa liberada com sucesso!");
+            System.out.println("--------------------------");
+        } else {
+        	System.out.println("\n-------------------------------------");
+            System.out.println("Mesa não encontrada ou já disponível.");
+            System.out.println("-------------------------------------");
+        }
+    }
+
+    private static void listarMesas(GestaoMesas gestaoMesas) {
+    	System.out.println("\n=== Lista Mesa ===");
+        System.out.println("Lista de Todas as Mesas:");
+        gestaoMesas.listarMesas();
+    }
+
+    private static void listarMesasDisponiveis(GestaoMesas gestaoMesas) {
+    	System.out.println("\n=== Listar Mesa Disponiveis ===");
+        gestaoMesas.mesasDisponiveis();
+    }
+
+    private static void alterarCapacidadeMesas(GestaoMesas gestaoMesas, Scanner scanner) {
+    	System.out.println("\n=== Alterar Capacidade de Mesa ===");
+        System.out.print("Informe a nova capacidade total de mesas: ");
+        int novaCapacidade = scanner.nextInt();
+        gestaoMesas.capacidadeMesas(novaCapacidade);
+        System.out.println("Capacidade de mesas alterada com sucesso!");
+    }
+
+    private static void menuGestaoPedidos(GestaoPedidos gestaoPedidos, Scanner scanner) {
+        boolean sair = false;
+        while (!sair) {
+            System.out.println("\n=== Menu de Gestão de Pedidos ===");
+            System.out.println("1. Escolher Pedido");
+            System.out.println("2. Adicionar Pedido");
+            System.out.println("3. Alterar Pedido");
+            System.out.println("4. Cancelar Pedido");
+            System.out.println("5. Excluir Pedido");
+            System.out.println("6. Listar Todos os Pedidos");
+            System.out.println("7. Sair");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (opcao) {
+            	case 1:
+            		escolherPedido(gestaoPedidos);
+            		break;
+                case 2:
+                    adicionarPedido(gestaoPedidos, scanner);
+                    break;
+                case 3:
+                    alterarPedido(gestaoPedidos, scanner);
+                    break;
+                case 4:
+                    cancelarPedido(gestaoPedidos, scanner);
+                    break;
+                case 5:
+                	excluirPedido(gestaoPedidos, scanner);
+                    break;
+                case 6:
+                    listarTodosPedidos(gestaoPedidos);
+                    break;
+                case 7:
+                    sair = true;
+                    break;
+                default:
+                	System.out.println("\n----------------------------------------------------");
+                    System.out.println("Opção inválida! Por favor, escolha uma opção válida.");
+                    System.out.println("----------------------------------------------------");
+            }
+        }
+        System.out.println("Encerrando o programa...");
+    }
+    
+    private static void escolherPedido(GestaoPedidos gestaoPedidos) {
+        Scanner scanner = new Scanner(System.in); 
+        System.out.println("Escolha um pedido:");
+        gestaoPedidos.listarTodosPedidos();
+        System.out.print("Digite o número do pedido: ");
+        int numeroPedido = scanner.nextInt();
+        scanner.nextLine(); 
+
+        gestaoPedidos.escolherPedido(numeroPedido);
+        scanner.close(); 
+    }
+
+    private static void adicionarPedido(GestaoPedidos gestaoPedidos, Scanner scanner) {
+        System.out.print("Nome do Pedido: ");
+        String nome = scanner.nextLine();
+        System.out.print("Valor do Pedido: ");
+        double valor = scanner.nextDouble();
+        scanner.nextLine(); 
+
+        gestaoPedidos.adicionarPedido(nome, valor);
+        System.out.println("\n------------------------------");
+        System.out.println("Pedido adicionado com sucesso!");
+        System.out.println("------------------------------");
+    }
+    
+    private static void alterarPedido(GestaoPedidos gestaoPedidos, Scanner scanner) {
+        System.out.print("Nome do Pedido a ser alterado: ");
+        String nome = scanner.nextLine();
+        System.out.print("Novo valor do Pedido: ");
+        double novoValor = scanner.nextDouble();
+        scanner.nextLine(); 
+
+        boolean alterado = gestaoPedidos.alterarPedido(nome, novoValor);
+        if (alterado) {
+        	System.out.println("\n----------------------------");
+            System.out.println("Pedido alterado com sucesso!");
+            System.out.println("----------------------------");
+        } else {
+        	System.out.println("\n----------------------");
+            System.out.println("Pedido não encontrado.");
+            System.out.println("----------------------");
+        }
+    }
+
+    private static void cancelarPedido(GestaoPedidos gestaoPedidos, Scanner scanner) {
+        System.out.print("Nome do Pedido a ser cancelado: ");
+        String nome = scanner.nextLine();
+
+        boolean cancelado = gestaoPedidos.cancelarPedido(nome);
+        if (cancelado) {
+        	System.out.println("\n-----------------------------");
+            System.out.println("Pedido cancelado com sucesso!");
+            System.out.println("-----------------------------");
+        } else {
+        	System.out.println("\n----------------------");
+            System.out.println("Pedido não encontrado.");
+            System.out.println("----------------------");
+        }
+    }
+
+    private static void excluirPedido(GestaoPedidos gestaoPedidos, Scanner scanner) {
+        System.out.print("Nome do Pedido a ser excluído: ");
+        String nome = scanner.nextLine();
+
+        boolean excluido = gestaoPedidos.excluirPedido(nome);
+        if (excluido) {
+        	System.out.println("\n----------------------------");
+            System.out.println("Pedido excluído com sucesso!");
+            System.out.println("----------------------------");
+        } else {
+        	System.out.println("\n----------------------");
+            System.out.println("Pedido não encontrado.");
+            System.out.println("----------------------");
+        }
+    }
+
+    private static void listarTodosPedidos(GestaoPedidos gestaoPedidos) {
+        System.out.println("Lista de Todos os Pedidos:");
+        GestaoPedidos.Node atual = gestaoPedidos.getPrimeiro();
+        while (atual != null) {
+            Pedidos pedido = gestaoPedidos.getPedido(atual);
+            System.out.println(pedido.getNome() + ", " + pedido.getValor());
+            atual = gestaoPedidos.getProximo(atual);
+        }
+    }
+    
+    private static void menusegundario(GestaoMesas gestaoMesas, GestaoFuncionarios gestaoFuncionarios, GestaoPedidos gestaoPedidos, GestaoClientes gestaoClientes, CaixaPagamento caixaPagamento, Scanner scanner) {
+        int opcao;
+        boolean sair = false;
+        while (!sair) {
+            System.out.println("\n=== Menu Segundario ===");
+            System.out.println("1. Cliente Vai para Mesa");
+            System.out.println("2. Funcionario Atende Mesa");
+            System.out.println("3. Escolher Pedido");
+            System.out.println("4. Receber e Prepara Pedidos");
+            System.out.println("5. Cliente Vai Pagar a Conta5");
+            System.out.println("6. Sair");
+            System.out.print("Escolha uma opção: ");
+            opcao = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (opcao) {
+                case 1:
+                    selecionarClienteParaMesa(gestaoClientes, gestaoMesas, scanner);
+                    break;
+                case 2:
+                    encaminharFuncionarioParaMesa(gestaoMesas, gestaoFuncionarios, scanner);
+                    break;
+                case 3:
+                	escolherPedido2(gestaoPedidos, gestaoClientes, gestaoMesas, scanner);
+                	break;    
+                case 4:
+                    receberPedidoEPreparar(gestaoMesas, scanner);
+                    break;
+                case 5:
+                    clienteRealizarPagamento(caixaPagamento, scanner);
+                    break;
+                case 6:
+                    sair = true;
+                    break;
+                default:
+                    System.out.println("\n----------------------------------------------------");
+                    System.out.println("Opção inválida! Por favor, escolha uma opção válida.");
+                    System.out.println("----------------------------------------------------");
+            }
+        }
+    }
+    
+    private static void selecionarClienteParaMesa(GestaoClientes gestaoClientes, GestaoMesas gestaoMesas, Scanner scanner) {
+        // Verificar se há clientes cadastrados
+        if (!gestaoClientes.haClientesCadastrados()) {
+            System.out.println("\n--------------------------");
+            System.out.println("Nenhum cliente cadastrado.");
+            System.out.println("--------------------------");
+            return;
+        }
+   
+        gestaoClientes.listarClientes();
+        System.out.print("\nDigite o nome do cliente: ");
+        String nomeCliente = scanner.next(); 
+        
+        gestaoMesas.mesasDisponiveis();
+        System.out.print("\nQual mesa deseja alocar o cliente: ");
+        int numeroMesa = scanner.nextInt();
+
+        if (gestaoMesas.selecionarClienteParaMesa(gestaoClientes, numeroMesa, nomeCliente)) {
+            System.out.println("\n----------------------------------------");
+            System.out.println("Cliente alocado para a mesa com sucesso!");
+            System.out.println("----------------------------------------");
+        } else {
+            System.out.println("\n-------------------------------------");
+            System.out.println("Falha ao alocar o cliente para a mesa");
+            System.out.println("-------------------------------------");
+        }
+    }    
+    private static void encaminharFuncionarioParaMesa(GestaoMesas gestaoMesas, GestaoFuncionarios gestaoFuncionarios, Scanner scanner) {
+    	gestaoMesas.listarMesasOcupadas();
+
+        if (!gestaoFuncionarios.haFuncionariosCadastrados()) {
+            System.out.println("\n------------------------------");
+            System.out.println("Nenhum funcionário cadastrado.");
+            System.out.println("------------------------------");
+            return;
+        }
+
+        System.out.print("\nDigite o Número da Mesa: ");
+        int numeroMesa = scanner.nextInt();
+        scanner.nextLine(); 
+        
+        if (!gestaoMesas.verificarMesaOcupada(numeroMesa)) {
+            System.out.println("\n-----------------------------------");
+            System.out.println("Mesa não encontrada ou não ocupada.");
+            System.out.println("-----------------------------------");
+            return;
+        }
+
+        gestaoFuncionarios.listarFuncionarios();
+
+        System.out.print("\nDigite o Nome do Funcionário: ");
+        String nomeFuncionario = scanner.nextLine();
+
+        Funcionarios funcionario = gestaoFuncionarios.getFuncionarioPeloNome(nomeFuncionario);
+        if (funcionario == null || !funcionario.getCargo().equalsIgnoreCase("Garçom")) {
+            System.out.println("\n-------------------------------------");
+            System.out.println("Apenas garçons podem atender a mesa.");
+            System.out.println("-------------------------------------");
+            return;
+        }
+
+        if (gestaoMesas.encaminharFuncionarioParaMesa(numeroMesa, nomeFuncionario)) {
+            System.out.println("\n------------------------------------------------");
+            System.out.println("Funcionário encaminhado para a mesa com sucesso!");
+            System.out.println("------------------------------------------------");
+        } else {
+            System.out.println("\n----------------------------------------------");
+            System.out.println("Falha ao encaminhar o funcionário para a mesa.");
+            System.out.println("----------------------------------------------");
+        }
+    }
+    
+    private static void escolherPedido2(GestaoPedidos gestaoPedidos, GestaoClientes gestaoClientes, GestaoMesas gestaoMesas, Scanner scanner) {
+        gestaoMesas.listarMesasOcupadas();
+        System.out.print("Digite o número da mesa: ");
+        int numeroMesa = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("\n------------------");
+        System.out.println("Escolha um pedido:");
+        System.out.println("------------------");
+
+        gestaoPedidos.listarTodosPedidos();
+
+        Mesa mesaCliente = gestaoMesas.getMesaPorNumero(numeroMesa);
+
+        if (mesaCliente != null) {
+            System.out.println("Cliente na mesa: " + mesaCliente.getCliente());
+
+            String nomeCliente = mesaCliente.getCliente();
+            Clientes clienteEscolhido = gestaoClientes.getClientePeloNome(nomeCliente);
+
+            boolean escolherMaisPedidos = true;
+            int numPedidos = 0;
+
+            while (escolherMaisPedidos) {
+                System.out.print("\nDigite o Número do Pedido Desejado ou '0' para finalizar: ");
+                int numeroPedido = scanner.nextInt();
+                scanner.nextLine();
+
+                if (numeroPedido == 0) {
+                    escolherMaisPedidos = false;
+                } else {
+                    Pedidos pedidoEscolhido = gestaoPedidos.getPedidoPeloNumero(numeroPedido);
+
+                    if (pedidoEscolhido != null) {
+                        clienteEscolhido.adicionarPedido(pedidoEscolhido);
+                        mesaCliente.adicionarPedidos(pedidoEscolhido);
+
+                        numPedidos++; 
+                        
+                        System.out.println("Pedido adicionado: " + pedidoEscolhido.getNome());
+                    } else {
+                        System.out.println("Pedido não encontrado.");
+                    }
+                }
+            }
+        }
+    }
+  
+    private static void receberPedidoEPreparar(GestaoMesas gestaoMesas, Scanner scanner) {
+        gestaoMesas.listarMesasOcupadas();
+        System.out.print("\nDigite o Número da Mesa: ");
+        int numeroMesa = scanner.nextInt();
+        scanner.nextLine(); 
+        
+        if (!gestaoMesas.verificarMesaOcupada(numeroMesa)) {
+            System.out.println("\n-----------------------------------");
+            System.out.println("Mesa não encontrada ou não ocupada.");
+            System.out.println("-----------------------------------");
+            return;
+        }
+
+        System.out.print("\nDigite o Pedido: ");
+        String pedido = scanner.nextLine();
+
+        System.out.println("\nPreparando o pedido...");
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("\nPedido preparado: " + pedido);
+        System.out.println("\n----------------------------------");
+        System.out.println("Pedido entregue ao cliente com sucesso!");
+        System.out.println("----------------------------------");
+    }
+    
+    private static void clienteRealizarPagamento(CaixaPagamento caixa, Scanner scanner) {
+        System.out.print("Digite o valor a ser pago: ");
+        double valor = scanner.nextDouble();
+        scanner.nextLine();
+
+        System.out.println("\n-------------------------------------------");
+        System.out.println("O pagamento será feito em dinheiro? (s/n): ");
+        System.out.println("-------------------------------------------");
+        String opcao = scanner.nextLine();
+        boolean emCartao = opcao.equalsIgnoreCase("n");
+
+        caixa.realizarPagamento(valor, emCartao);
+
+        if (!emCartao) {
+        	System.out.println("\n---------------------------------");
+            System.out.println("Digite o valor pago em dinheiro: ");
+            System.out.println("---------------------------------");
+            double valorPago = scanner.nextDouble();
+            scanner.nextLine();
+
+            double troco = caixa.calcularTroco(valorPago, valor);
+            if (troco >= 0) {
+                caixa.Recibo(valorPago, troco);
+            } else {
+            	System.out.println("\n------------------------");
+                System.out.println("Valor pago insuficiente.");
+            	System.out.println("------------------------");
+            }
+        }
+    }
+}
