@@ -1,0 +1,175 @@
+package Gestao;
+
+import Estrutura.Pedidos;
+import Estrutura.Clientes;
+
+public class GestaoPedidos {
+    private Node primeiro;
+    private int tamanho;
+    private GestaoClientes gestaoClientes;
+
+    public class Node {
+        Pedidos pedido;
+        Node proximo;
+
+        Node(Pedidos pedido) {
+            this.pedido = pedido;
+            this.proximo = null;
+        }
+    }
+
+    public GestaoPedidos(GestaoClientes gestaoClientes) {
+        this.gestaoClientes = gestaoClientes;
+        this.primeiro = null;
+        this.tamanho = 0;
+        menu();
+    }
+
+    private void menu() {
+        adicionarPedido("X-Burg", 10.00);
+        adicionarPedido("X-Salada", 15.00);
+        adicionarPedido("X-Bacon", 18.00);
+        adicionarPedido("X-Frango", 18.00);
+        adicionarPedido("Dog Tradicional", 20.00);
+        adicionarPedido("Dog Bacon", 25.00);
+        adicionarPedido("Dog Frango", 25.00);
+    }
+    
+    public void adicionarPedido(String nome, double valor) {
+        Pedidos novoPedido = new Pedidos(nome, valor);
+        Node novoNode = new Node(novoPedido);
+        if (primeiro == null) {
+            primeiro = novoNode;
+        } else {
+            Node atual = primeiro;
+            while (atual.proximo != null) {
+                atual = atual.proximo;
+            }
+            atual.proximo = novoNode;
+        }
+        tamanho++;
+    }
+
+    public boolean alterarPedido(String nome, double novoValor) {
+        Node atual = primeiro;
+        while (atual != null) {
+            if (atual.pedido.getNome().equals(nome)) {
+                atual.pedido.setValor(novoValor);
+                return true;
+            }
+            atual = atual.proximo;
+        }
+        return false;
+    }
+
+    public boolean cancelarPedido(String nome) {
+        if (primeiro != null) {
+            if (primeiro.pedido.getNome().equals(nome)) {
+                primeiro = primeiro.proximo;
+                tamanho--;
+                return true;
+            } else {
+                Node anterior = primeiro;
+                Node atual = primeiro.proximo;
+                while (atual != null) {
+                    if (atual.pedido.getNome().equals(nome)) {
+                        anterior.proximo = atual.proximo;
+                        tamanho--;
+                        return true;
+                    }
+                    anterior = atual;
+                    atual = atual.proximo;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean excluirPedido(String nome) {
+        Node anterior = null;
+        Node atual = primeiro;
+        while (atual != null) {
+            if (atual.pedido.getNome().equals(nome)) {
+                if (anterior == null) {
+                    primeiro = atual.proximo;
+                } else {
+                    anterior.proximo = atual.proximo;
+                }
+                tamanho--;
+                return true;
+            }
+            anterior = atual;
+            atual = atual.proximo;
+        }
+        return false;
+    }
+
+    public void listarTodosPedidos() {
+        System.out.println("Lista de Todos os Pedidos:");
+        Node atual = primeiro;
+        int contador = 1;
+        while (atual != null) {
+            System.out.println(contador + ". " + atual.pedido.getNome() + ", " + atual.pedido.getValor());
+            atual = atual.proximo;
+            contador++;
+        }
+    }
+    
+    public int getTamanho() {
+        return tamanho;
+    }
+    
+    public Node getPrimeiro() {
+        return primeiro;
+    }
+    
+    public Node getProximo(Node node) {
+        return node.proximo;
+    }
+    
+    public Pedidos getPedido(Node node) {
+        return node.pedido;
+    }
+
+    public Pedidos escolherPedido(int numeroPedido) {
+        Node atual = primeiro;
+        int contador = 1;
+        while (atual != null) {
+            if (contador == numeroPedido) {
+                return atual.pedido;
+            }
+            atual = atual.proximo;
+            contador++;
+        }
+        return null; 
+    }
+
+    public Pedidos getPedidoPeloNumero(int numeroPedido) {
+        Node atual = primeiro;
+        int contador = 1;
+        while (atual != null) {
+            if (contador == numeroPedido) {
+                return atual.pedido;
+            }
+            atual = atual.proximo;
+            contador++;
+        }
+        return null; 
+    }
+
+    public void vincularPedidoAoCliente(Clientes cliente, Pedidos pedido) {
+        cliente.setPedidos(pedido);
+        System.out.println("Pedido vinculado ao cliente com sucesso!");
+    }
+
+    public void listarPedidosEscolhidos() {
+        System.out.println("Pedidos escolhidos:");
+        Node atual = primeiro;
+        int contador = 1;
+        while (atual != null) {
+            System.out.println(contador + ". " + atual.pedido.getNome());
+            atual = atual.proximo;
+            contador++;
+        }
+    }
+}
