@@ -1,0 +1,89 @@
+package Gestao;
+
+public class CaixaPagamento {
+    private Pagamento primeiro;
+
+    private class Pagamento {
+        double valor;
+        boolean emCartao;
+        Pagamento proximo;
+
+        Pagamento(double valor, boolean emCartao) {
+            this.valor = valor;
+            this.emCartao = emCartao;
+            this.proximo = null;
+        }
+    }
+
+    public CaixaPagamento() {
+        this.primeiro = null;
+    }
+
+    public void realizarPagamento(double valor, boolean emCartao) {
+        Pagamento novoPagamento = new Pagamento(valor, emCartao);
+        if (primeiro == null) {
+            primeiro = novoPagamento;
+        } else {
+            Pagamento atual = primeiro;
+            while (atual.proximo != null) {
+                atual = atual.proximo;
+            }
+            atual.proximo = novoPagamento;
+        }
+        if (emCartao) {
+        	System.out.println("\n--------------------------------------------------------------");
+            System.out.println("Pagamento de R$" + valor + " realizado com sucesso por cartão.");
+            System.out.println("--------------------------------------------------------------");
+        } else {
+        	System.out.println("\n---------------------------------------------------------------");
+            System.out.println("Pagamento de R$" + valor + " realizado com sucesso em dinheiro.");
+            System.out.println("---------------------------------------------------------------");
+        }
+    }
+
+    public double calcularTroco(double valorPago, double valorConta) {
+        return valorPago - valorConta;
+    }
+
+    public void Recibo(double valorPago, double troco) {
+        System.out.println("--------- Recibo ---------");
+        System.out.println("Valor Pago: R$" + valorPago);
+        System.out.println("Troco: R$" + troco);
+        System.out.println("--------------------------");
+        System.out.println("Obrigado pela preferência!");
+        System.out.println("--------------------------");
+    }
+
+    public void HistoricoPagamentos() {
+        if (primeiro == null) {
+        	System.out.println("\n----------------------------------");
+            System.out.println("Nenhum pagamento registrado ainda.");
+            System.out.println("----------------------------------");
+        } else {
+            System.out.println("--- Histórico de Pagamentos ---");
+            Pagamento atual = primeiro;
+            int numPagamento = 1;
+            while (atual != null) {
+                if (atual.emCartao) {
+                	System.out.println("\n----------------------------------------------------------------");
+                    System.out.println("Pagamento " + numPagamento + ": R$" + atual.valor + " por cartão");
+                    System.out.println("----------------------------------------------------------------");
+                } else {
+                	System.out.println("\n-----------------------------------------------------------------");
+                    System.out.println("Pagamento " + numPagamento + ": R$" + atual.valor + " em dinheiro");
+                    System.out.println("-----------------------------------------------------------------");
+                }
+                atual = atual.proximo;
+                numPagamento++;
+            }
+        }
+    }
+
+    public double TrocoDinheiro(double valorPago, double valorConta) {
+        if (valorPago >= valorConta) {
+            return valorPago - valorConta;
+        } else {
+            return -1; 
+        }
+    }
+}
