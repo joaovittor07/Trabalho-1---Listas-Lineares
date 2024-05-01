@@ -1,0 +1,302 @@
+package Gestao;
+
+import Estrutura.Mesa;
+
+public class GestaoMesas {
+    private Node primeiroDisponivel;
+    private Node primeiroOcupada;
+    private int tamanho;
+    private int capacidade;
+    private GestaoClientes gestaoClientes;
+
+    private class Node {
+        Mesa mesa;
+        Node proximo;
+
+        Node(Mesa mesa) {
+            this.mesa = mesa;
+            this.proximo = null;
+        }
+    }
+
+    public GestaoMesas(int capacidade) {
+        this.primeiroDisponivel = null;
+        this.primeiroOcupada = null;
+        this.tamanho = 0;
+        this.capacidade = capacidade;
+
+        for (int i = 1; i <= capacidade; i++) {
+            Mesa novaMesa = new Mesa(i);
+            Node novoNode = new Node(novaMesa);
+            if (i == 1) {
+                this.primeiroDisponivel = novoNode;
+            } else {
+                Node atual = this.primeiroDisponivel;
+                while (atual.proximo != null) {
+                    atual = atual.proximo;
+                }
+                atual.proximo = novoNode;
+            }
+            this.tamanho++;
+        }
+    }
+
+    public boolean ocuparMesa(int numeroMesa) {
+        Node anterior = null;
+        Node atual = this.primeiroDisponivel;
+        while (atual != null && atual.mesa.getNumero() != numeroMesa) {
+            anterior = atual;
+            atual = atual.proximo;
+        }
+        if (atual != null) {
+            if (anterior != null) {
+                anterior.proximo = atual.proximo;
+            } else {
+                this.primeiroDisponivel = atual.proximo;
+            }
+            atual.proximo = this.primeiroOcupada;
+            this.primeiroOcupada = atual;
+            atual.mesa.setOcupada(true);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean liberarMesa(int numeroMesa) {
+        Node anterior = null;
+        Node atual = this.primeiroOcupada;
+        while (atual != null && atual.mesa.getNumero() != numeroMesa) {
+            anterior = atual;
+            atual = atual.proximo;
+        }
+        if (atual != null) {
+            if (anterior != null) {
+                anterior.proximo = atual.proximo;
+            } else {
+                this.primeiroOcupada = atual.proximo;
+            }
+            atual.proximo = this.primeiroDisponivel;
+            this.primeiroDisponivel = atual;
+            return true;
+        }
+        return false;
+    }
+
+    public void listarMesas() {
+        System.out.println("Lista de Mesas:");
+        Node atual = this.primeiroDisponivel;
+        while (atual != null) {
+            if (!atual.mesa.isOcupada()) {
+                System.out.println(atual.mesa + " (disponível)");
+            }
+            atual = atual.proximo;
+        }
+        atual = this.primeiroOcupada;
+        while (atual != null) {
+            System.out.println(atual.mesa + " (ocupada)");
+            atual = atual.proximo;
+        }
+    }
+
+
+    public void capacidadeMesas(int novaCapacidade) {
+        if (novaCapacidade > this.capacidade) {
+            for (int i = this.capacidade + 1; i <= novaCapacidade; i++) {
+                Mesa novaMesa = new Mesa(i);
+                Node novoNode = new Node(novaMesa);
+                if (this.primeiroDisponivel == null) {
+                    this.primeiroDisponivel = novoNode;
+                } else {
+                    Node atual = this.primeiroDisponivel;
+                    while (atual.proximo != null) {
+                        atual = atual.proximo;
+                    }
+                    atual.proximo = novoNode;
+                }
+                this.tamanho++;
+            }
+        } else if (novaCapacidade < this.capacidade) {
+            Node atual = this.primeiroDisponivel;
+            for (int i = novaCapacidade + 1; i <= this.capacidade; i++) {
+                if (atual != null) {
+                    atual = atual.proximo;
+                }
+            }
+            if (atual != null) {
+                atual.proximo = null;
+                this.tamanho = novaCapacidade;
+            }
+        }
+        this.capacidade = novaCapacidade;
+    }
+
+    public void mesasDisponiveis() {
+    	System.out.println("\n------------------");
+        System.out.println("Mesas Disponíveis:");
+        System.out.println("------------------");
+        Node atual = this.primeiroDisponivel;
+        while (atual != null) {
+            System.out.println(atual.mesa);
+            atual = atual.proximo;
+        }
+    }
+    
+    public boolean alocarClienteParaMesa(String nomeCliente, int numeroMesa) {
+        // Verificar se o cliente está cadastrado
+        if (!gestaoClientes.verificarCliente(nomeCliente)) {
+        	System.out.println("\n-----------------------");
+            System.out.println("Cliente não encontrado.");
+            System.out.println("-----------------------");
+            return false;
+        }
+
+        // Verificar se a mesa está disponível
+        Node atual = primeiroDisponivel;
+        Node anterior = null;
+        while (atual != null && atual.mesa.getNumero() != numeroMesa) {
+            anterior = atual;
+            atual = atual.proximo;
+        }
+        if (atual == null) {
+        	System.out.println("\n----------------------------------");
+            System.out.println("Mesa não encontrada ou já ocupada.");
+            System.out.println("----------------------------------");
+            return false;
+        }
+
+        atual.mesa.setCliente(nomeCliente);
+        atual.mesa.setOcupada(true); // Marcar a mesa como ocupada
+        if (anterior != null) {
+            anterior.proximo = atual.proximo;
+        } else {
+            primeiroDisponivel = atual.proximo;
+        }
+        atual.proximo = primeiroOcupada;
+        primeiroOcupada = atual;
+
+        System.out.println("\n----------------------------------------");
+        System.out.println("Cliente alocado para a mesa com sucesso!");
+        System.out.println("----------------------------------------");
+        return true;
+    }
+
+    public boolean verificarMesaDisponivel(int numeroMesa) {
+        Node atual = primeiroDisponivel;
+        while (atual != null) {
+            if (atual.mesa.getNumero() == numeroMesa) {
+                return true; // A mesa está disponível
+            }
+            atual = atual.proximo;
+        }
+        return false; // A mesa não está disponível
+    }
+
+    public Node getPrimeiroDisponivel() {
+        return this.primeiroDisponivel;
+    }
+    
+    public boolean selecionarClienteParaMesa(GestaoClientes gestaoClientes, int numeroMesa, String nomeCliente) {
+        // Verificar se o cliente está cadastrado
+        if (!gestaoClientes.verificarCliente(nomeCliente)) {
+        	System.out.println("\n-----------------------");
+            System.out.println("Cliente não encontrado.");
+            System.out.println("-----------------------");
+            return false;
+        }
+
+        Node atual = primeiroDisponivel;
+        Node anterior = null;
+        while (atual != null && atual.mesa.getNumero() != numeroMesa) {
+            anterior = atual;
+            atual = atual.proximo;
+        }
+
+        if (atual == null) {
+        	System.out.println("\n----------------------------------");
+            System.out.println("Mesa não encontrada ou já ocupada.");
+            System.out.println("----------------------------------");
+            return false;
+        }
+
+        atual.mesa.setCliente(nomeCliente);
+        atual.mesa.setOcupada(true);
+
+        if (anterior != null) {
+            anterior.proximo = atual.proximo;
+        } else {
+            primeiroDisponivel = atual.proximo;
+        }
+        
+        atual.proximo = primeiroOcupada;
+        primeiroOcupada = atual;
+
+        return true;
+    }
+    
+    public boolean encaminharFuncionarioParaMesa(int numeroMesa, String nomeFuncionario) {
+        Node atual = primeiroOcupada;
+        while (atual != null && atual.mesa.getNumero() != numeroMesa) {
+            atual = atual.proximo;
+        }
+
+        if (atual == null || !atual.mesa.isOcupada()) {
+            System.out.println("\n----------------------------------------");
+            System.out.println("Mesa não encontrada ou não está ocupada.");
+            System.out.println("----------------------------------------");
+            return false;
+        }
+
+        atual.mesa.setFuncionario(nomeFuncionario);
+
+        return true;
+    }
+    
+    public boolean verificarMesaOcupada(int numeroMesa) {
+        Node atual = primeiroOcupada;
+        while (atual != null && atual.mesa.getNumero() != numeroMesa) {
+            atual = atual.proximo;
+        }
+        // Verifica se a mesa foi encontrada e se está ocupada
+        return atual != null && atual.mesa.isOcupada();
+    }
+    
+    public void listarMesasOcupadas() {
+        if (this.primeiroOcupada == null) {
+            System.out.println("\n-----------------------------------");
+            System.out.println("Nenhuma mesa ocupada no momento.");
+            System.out.println("-----------------------------------");
+            return;
+        }
+        
+        System.out.println("\n-----------------");
+        System.out.println("Mesas Ocupadas:");
+        System.out.println("-----------------");
+        
+        Node atual = this.primeiroOcupada;
+        while (atual != null) {
+            System.out.println("Número da Mesa: " + atual.mesa.getNumero());
+            System.out.println("Status: Ocupada");
+            System.out.println("-----------------");
+            atual = atual.proximo;
+        }
+    }  
+    
+    public Mesa getMesaPorNumero(int numeroMesa) {
+        Node atual = primeiroDisponivel;
+        while (atual != null) {
+            if (atual.mesa.getNumero() == numeroMesa) {
+                return atual.mesa;
+            }
+            atual = atual.proximo;
+        }
+        atual = primeiroOcupada;
+        while (atual != null) {
+            if (atual.mesa.getNumero() == numeroMesa) {
+                return atual.mesa;
+            }
+            atual = atual.proximo;
+        }
+        return null;
+    }
+    
+}
