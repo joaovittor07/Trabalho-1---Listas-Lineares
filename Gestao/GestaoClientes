@@ -1,0 +1,123 @@
+package Gestao;
+
+import Estrutura.Clientes;
+
+public class GestaoClientes {
+    private Node primeiro;
+    private int tamanho;
+
+    private class Node {
+        Clientes cliente;
+        Node proximo;
+
+        Node(Clientes cliente) {
+            this.cliente = cliente;
+            this.proximo = null;
+        }
+    }
+
+    public GestaoClientes() {
+        this.primeiro = null;
+        this.tamanho = 0;
+    }
+
+    public void cadastrarCliente(Clientes cliente) {
+        Node novoCliente = new Node(cliente);
+        if (primeiro == null) {
+            primeiro = novoCliente;
+        } else {
+            Node atual = primeiro;
+            while (atual.proximo != null) {
+                atual = atual.proximo;
+            }
+            atual.proximo = novoCliente;
+        }
+        tamanho++;
+        System.out.println("\n-------------------------------");
+        System.out.println("Cliente cadastrado com sucesso!");
+        System.out.println("-------------------------------");
+    }
+
+    public boolean removerCliente(String nome) {
+        Node atual = primeiro;
+        Node anterior = null;
+        while (atual != null) {
+            if (atual.cliente.getNome().equals(nome)) {
+                if (anterior == null) {
+                    primeiro = atual.proximo;
+                } else {
+                    anterior.proximo = atual.proximo;
+                }
+                tamanho--;
+                System.out.println("\n-----------------------------");
+                System.out.println("Cliente removido com sucesso!");
+                System.out.println("-----------------------------");
+                return true;
+            }
+            anterior = atual;
+            atual = atual.proximo;
+        }
+        System.out.println("\n-----------------------");
+        System.out.println("Cliente não encontrado!");
+        System.out.println("-----------------------");
+        return false;
+    }
+
+    public void listarClientes() {
+    	System.out.println("\n------------------");
+        System.out.println("Lista de Clientes:");
+        System.out.println("------------------");
+        Node atual = primeiro;
+        while (atual != null) {
+            System.out.println(atual.cliente);
+            atual = atual.proximo;
+        }
+    }
+
+    public boolean atualizarCliente(String nome, String novoNome, String novoCpf, String novoTelefone) {
+        Node atual = primeiro;
+        while (atual != null) {
+            if (atual.cliente.getNome().equals(nome)) {
+                atual.cliente.setNome(novoNome);
+                atual.cliente.setCpf(novoCpf);
+                atual.cliente.setTelefone(novoTelefone);
+                System.out.println("\n--------------------------------");
+                System.out.println("Cliente atualizadas com sucesso!");
+                System.out.println("--------------------------------");
+                return true;
+            }
+            atual = atual.proximo;
+        }
+        System.out.println("\n-----------------------");
+        System.out.println("Cliente não encontrado.");
+        System.out.println("------------------------");
+        return false;
+    }
+    
+    public boolean verificarCliente(String nomeCliente) {
+        Node atual = primeiro;
+        while (atual != null) {
+            if (atual.cliente.getNome().equals(nomeCliente)) {
+                return true;
+            }
+            atual = atual.proximo;
+        }
+        return false;
+    }
+    
+    public boolean haClientesCadastrados() {
+        return tamanho > 0;
+    }
+    
+    public Clientes getClientePeloNome(String nome) {
+        Node atual = primeiro;
+        while (atual != null) {
+            if (atual.cliente.getNome().equals(nome)) {
+                return atual.cliente;
+            }
+            atual = atual.proximo;
+        }
+        return null;
+    }
+
+}
